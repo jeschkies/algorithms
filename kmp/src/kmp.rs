@@ -69,14 +69,15 @@ mod tests {
     #[test]
     fn prefix_match_table() {
         assert_eq!(prefix_function("ABCDABD"), vec![0, -1, -1, -1, 0, 1, -1]);
-
         assert_eq!(prefix_function("AAAA"), vec![0, 0, 1, 2]);
+        assert_eq!(prefix_function("ABAB"), vec![0, -1, 0, 1]);
     }
 
     #[test]
     fn kmp_match() {
         let result = string_match("ABCDABD", "ABC ABCDAB ABCDABCDABDABCDABDE");
+        assert_eq!(result, vec![15, 22]);
 
-        assert_eq!(result, vec![15, 22])
+        assert_eq!(string_match("ABAB", "aaaABCABABcc"), vec![6]);
     }
 }
