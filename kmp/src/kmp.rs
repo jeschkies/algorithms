@@ -5,60 +5,52 @@
 ///     A vector of start positions for all occurrences.
 fn string_match(word: &str, body: &str) -> Vec<usize> {
     // Shortcut
-    if body.len() < word.len() {
-        return Vec::new()
+    if word.is_empty() || body.len() < word.len() {
+        return Vec::new();
     }
 
     let mut offsets: Vec<usize> = Vec::new();
 
     let partial_match_table = prefix_function(word);
 
-    let mut k: i32 = 0;
-    let mut j: usize = 0;
+    let mut q: i32 = -1;
 
-    while j < body.len() {
-        let c = char_at(body, j);
-       if char_at(word, k as usize) == c  {
-           j = j + 1;
-           k = k + 1;
-           if k == word.len() as i32 {
-               offsets.push(j - k as usize) ;
-               k = partial_match_table[word.len()];
-           }
-       } else {
-           k = partial_match_table[k as usize];
-           if k < 0 {
-               j = j + 1;
-               k = k + 1
-           }
-       }
+    for (i, c) in body.chars().enumerate() {
+        while q >= 0 && char_at(word, q as usize + 1) != c {
+            q = partial_match_table[q as usize];
+        }
+
+        if char_at(word, (q + 1) as usize) == c {
+            q = q + 1;
+        }
+
+        if (q + 1) as usize == word.len() {
+            offsets.push(i - q as usize);
+            q = partial_match_table[q as usize];
+        }
     }
+
     offsets
 }
 
 fn prefix_function(word: &str) -> Vec<i32> {
-    let mut table: Vec<i32> = vec![0; word.len() + 1];
+    let mut table: Vec<i32> = vec![0; word.len()];
 
-    table[0] = -1;
+    table[0] = 0;
 
-    let mut cnd: i32 = 0;
-    let mut pos: i32 = 1;
+    let mut k: i32 = -1;
 
-    while (pos as usize) < word.len() {
-       if char_at(word, pos as usize) == char_at(word, cnd as usize) {
-          table[pos as usize] = table[cnd as usize];
-       }  else {
-           table[pos as usize] = cnd;
-           cnd = table[cnd as usize];
-           while cnd >= 0 && char_at(word, pos as usize) != char_at(word, cnd as usize) {
-               cnd = table[cnd as usize];
-           }
-       }
-        pos = pos + 1;
-        cnd = cnd + 1;
+    for (q, c) in word.chars().enumerate().skip(1) {
+        while k >= 0 && char_at(word, (k + 1) as usize) != c {
+            k = table[k as usize];
+        }
+
+        if char_at(word, (k + 1) as usize) == c {
+            k = k + 1;
+        }
+
+        table[q] = k;
     }
-
-    table[pos as usize] = cnd;
 
     table
 }
@@ -72,19 +64,19 @@ fn char_at(s: &str, i: usize) -> char {
 
 #[cfg(test)]
 mod tests {
-    use crate::kmp::{string_match, prefix_function};
+    use crate::kmp::{prefix_function, string_match};
 
     #[test]
     fn prefix_match_table() {
-        let result = prefix_function("ABCDABD") ;
+        assert_eq!(prefix_function("ABCDABD"), vec![0, -1, -1, -1, 0, 1, -1]);
 
-        assert_eq!(result, vec![-1, 0, 0, 0, -1, 0, 2, 0])
+        assert_eq!(prefix_function("AAAA"), vec![0, 0, 1, 2]);
     }
 
     #[test]
     fn kmp_match() {
-        let result = string_match("ABCDABD", "ABC ABCDAB ABCDABCDABDE");
+        let result = string_match("ABCDABD", "ABC ABCDAB ABCDABCDABDABCDABDE");
 
-        assert_eq!(result, vec![15])
+        assert_eq!(result, vec![15, 22])
     }
 }
