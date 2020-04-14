@@ -2,14 +2,27 @@
 /// Accurate floating point summation.
 ///
 /// This uses [Kahan Algorithm](https://en.wikipedia.org/wiki/Kahan_summation_algorithm).
-pub fn sum(values: &[f32]) -> f32 {
+pub fn sum(values: &[f64]) -> f64 {
+    let mut s:  f64 = 0.0;
+    let mut c: f64 = 0.0;
 
+    for v in values {
+        let y = v - c;
+        let t = s + y;
+        c = (t - s) - y;
+        s = t;
+    }
+
+    s
 }
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
     #[test]
     fn it_works() {
-        assert_eq!(2 + 2, 4);
+        let result = sum(&vec![10000.0, 3.14159, 2.71828]);
+        assert_eq!(result, 10005.85987,);
     }
 }
