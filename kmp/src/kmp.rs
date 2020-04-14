@@ -2,7 +2,7 @@
 /// string matching algorithm to find all occurrences of `word` in `body`.
 ///
 /// # Return
-///     A vector of start positions for all occurrences.
+/// A vector of start positions for all occurrences.
 fn string_match(word: &str, body: &str) -> Vec<usize> {
     // Shortcut
     if word.is_empty() || body.len() < word.len() {
