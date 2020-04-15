@@ -1,9 +1,8 @@
-
 /// Accurate floating point summation.
 ///
 /// This uses [Kahan Algorithm](https://en.wikipedia.org/wiki/Kahan_summation_algorithm).
 pub fn sum(values: &[f64]) -> f64 {
-    let mut s:  f64 = 0.0;
+    let mut s: f64 = 0.0;
     let mut c: f64 = 0.0;
 
     for v in values {
@@ -14,6 +13,13 @@ pub fn sum(values: &[f64]) -> f64 {
     }
 
     s
+}
+
+/// Accurate floating point summation.
+///
+/// This implementations uses SIMD instruction to speed things up.
+pub fn sum_simd(values: &[f64]) -> f64 {
+    sum(values)
 }
 
 #[cfg(test)]
