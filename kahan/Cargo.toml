@@ -5,6 +5,7 @@ authors = ["Karsten Jeschkies <k@jeschkies.xyz>"]
 edition = "2018"
 
 [dependencies]
+faster = { git = "https://github.com/AdamNiederer/faster.git" }
 
 [dev-dependencies]
 criterion = "0.3"
