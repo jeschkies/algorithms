@@ -1,0 +1,16 @@
+[package]
+name = "kahan"
+version = "0.1.0"
+authors = ["Karsten Jeschkies <k@jeschkies.xyz>"]
+edition = "2018"
+
+[dependencies]
+faster = { git = "https://github.com/AdamNiederer/faster.git" }
+
+[dev-dependencies]
+criterion = "0.3"
+rand = "0.7"
+
+[[bench]]
+name = "simple_benchmark"
+harness = false
